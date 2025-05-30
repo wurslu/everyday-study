@@ -25,12 +25,12 @@ func Load() *Config {
 		Port:           getEnv("PORT", "91"),
 		Environment:    getEnv("ENVIRONMENT", "development"),
 		DatabasePath:   getEnv("DATABASE_PATH", "learning.db"),
-		VolcanoAPIKey:  getEnv("ARK_API_KEY", ""),
+		VolcanoAPIKey:  getEnv("VOLCANO_API_KEY", ""),
 		VolcanoBaseURL: getEnv("VOLCANO_BASE_URL", "https://ark.cn-beijing.volces.com/api/v3"),
 	}
 
 	if cfg.VolcanoAPIKey == "" {
-		log.Fatal("ARK_API_KEY 环境变量未设置")
+		log.Fatal("VOLCANO_API_KEY 环境变量未设置")
 	}
 
 	return cfg

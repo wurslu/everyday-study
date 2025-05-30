@@ -19,9 +19,6 @@ main
 *.out
 *.prof
 
-# Go 模块缓存
-go.sum
-
 # 数据库文件
 *.db
 *.sqlite
