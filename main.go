@@ -1,47 +1,48 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"everyday-study-backend/internal/config"
 	"everyday-study-backend/internal/database"
 	"everyday-study-backend/internal/handlers"
 	"everyday-study-backend/internal/middleware"
+	"everyday-study-backend/internal/models"
+	"everyday-study-backend/internal/scheduler"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// 加载配置
 	cfg := config.Load()
 
-	// 初始化数据库 - 传递配置
 	db, err := database.Init(cfg)
 	if err != nil {
 		log.Fatal("数据库初始化失败:", err)
 	}
 
-	// 设置 Gin 模式
 	if cfg.Environment == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	// 创建路由
 	router := gin.Default()
 
-	// 配置 CORS
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // 允许所有域名，生产环境建议指定具体域名
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization", "Accept", "X-Requested-With"},
 		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: false, // 设为 false 以支持通配符域名
+		AllowCredentials: false,
 	}))
 
-	// 添加预检请求处理
 	router.OPTIONS("/*path", func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
@@ -51,10 +52,27 @@ func main() {
 
 	router.Use(middleware.ErrorHandler())
 
-	// 创建处理器
 	handler := handlers.New(db)
 
-	// 配置路由
+	var contentScheduler *scheduler.ContentScheduler
+	if cfg.Environment == "production" {
+		contentScheduler = scheduler.NewContentScheduler(cfg)
+		contentScheduler.Start()
+		log.Println("✅ 定时更新任务已启用")
+	} else {
+		log.Println("ℹ️  开发环境，定时更新任务已禁用")
+	}
+
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": "不积跬步，无以至千里；不积小流，无以成江海",
+			"description": "每日学习助手 - 用知识点亮人生",
+			"api_docs": "/api/health",
+			"learning_types": models.GetAllLearningTypes(),
+		})
+	})
+
 	api := router.Group("/api")
 	{
 		api.GET("/health", handler.Health)
@@ -62,45 +80,81 @@ func main() {
 		api.GET("/learning-history", handler.GetLearningHistory)
 		api.GET("/learning-history/:type", handler.GetLearningHistoryByType)
 		api.GET("/stats", handler.GetGlobalStats)
+		
 	}
 
-	// 404 处理
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{
 			"success":    false,
-			"message":    "API接口不存在",
+			"message":    "路径不存在",
+			"suggestion": "访问 / 查看可用接口",
 			"error_code": "NOT_FOUND",
 		})
 	})
 
-	// Render 端口配置
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = cfg.Port
 	}
 
-	// 启动信息
+	srv := &http.Server{
+		Addr:    "0.0.0.0:" + port,
+		Handler: router,
+	}
+
 	fmt.Println("🚀 学习助手后端服务启动成功！")
 	fmt.Printf("📡 服务地址: http://0.0.0.0:%s\n", port)
-	fmt.Println("📊 API文档:")
+	fmt.Println("💡 励志首页: /")
+	if contentScheduler != nil {
+		fmt.Println("🌙 定时更新: 每晚12点自动更新学习内容")
+		fmt.Printf("⏰ 下次更新: %s\n", contentScheduler.GetNextUpdateTime().Format("2006-01-02 00:00:00"))
+	}
+	fmt.Println("📊 安全API接口:")
+	fmt.Println("   GET  / - 励志首页")
 	fmt.Println("   GET  /api/health - 健康检查")
 	fmt.Println("   GET  /api/today-learning/{type} - 获取今日学习内容")
 	fmt.Println("   GET  /api/learning-history - 获取所有学习历史")
 	fmt.Println("   GET  /api/learning-history/{type} - 获取指定类型学习历史")
 	fmt.Println("   GET  /api/stats - 获取全局统计")
 	fmt.Println("📚 支持的学习类型: english, chinese, tcm")
-	fmt.Println("💡 注意：现在所有用户在同一天看到相同内容！")
+	fmt.Println("🛡️  安全特性: 已移除所有管理和调试接口")
 	fmt.Println("🌐 CORS: 已配置支持跨域请求")
 	fmt.Printf("🔑 API密钥: %s\n", maskAPIKey(cfg.VolcanoAPIKey))
 
-	// 直接启动
-	log.Printf("服务器启动在端口 %s", port)
-	if err := router.Run("0.0.0.0:" + port); err != nil {
-		log.Fatal("服务启动失败:", err)
+	go func() {
+		log.Printf("服务器启动在端口 %s", port)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("服务启动失败: %v", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("🔄 正在优雅关闭服务...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if contentScheduler != nil {
+		log.Println("🛑 停止内容定时器...")
+		contentScheduler.Stop()
+		log.Println("✅ 定时器已停止")
+	}
+
+	log.Println("🔄 关闭HTTP服务器...")
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Printf("❌ 服务器强制关闭: %v", err)
+	}
+
+	select {
+	case <-ctx.Done():
+		log.Println("⏰ 关闭超时")
+	default:
+		log.Println("✅ 服务器已优雅关闭")
 	}
 }
 
-// 遮盖API密钥显示
 func maskAPIKey(key string) string {
 	if len(key) <= 8 {
 		return "已设置"

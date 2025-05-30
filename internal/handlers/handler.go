@@ -55,6 +55,11 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 		return
 	}
 
+	// 添加请求日志
+	fmt.Printf("📥 收到请求 - 类型: %s, 时间: %s\n", 
+		models.GetLearningTypeName(learningType), 
+		time.Now().Format("2006-01-02 15:04:05"))
+
 	// 检查今日是否已有记录
 	todayRecord, err := database.GetTodayLearningRecord(learningType)
 	if err != nil {
@@ -69,7 +74,8 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 
 	// 如果今日已有记录，直接返回
 	if todayRecord != nil {
-		log.Printf("返回今日已缓存的%s内容", models.GetLearningTypeName(learningType))
+		fmt.Printf("🎯 返回今日已缓存的%s内容，记录ID: %d\n", 
+			models.GetLearningTypeName(learningType), todayRecord.ID)
 		c.JSON(http.StatusOK, models.APIResponse{
 			Success: true,
 			Message: "获取今日学习内容成功",
@@ -87,7 +93,7 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 	}
 
 	// 生成新内容
-	log.Printf("获取新的 %s 学习内容...", models.GetLearningTypeName(learningType))
+	fmt.Printf("🆕 今日尚无%s内容，开始生成新内容...\n", models.GetLearningTypeName(learningType))
 
 	// 获取已学习内容列表
 	learnedContent, err := database.GetLearnedContent(learningType)
@@ -100,6 +106,8 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 		})
 		return
 	}
+
+	fmt.Printf("📚 已学习内容数量: %d\n", len(learnedContent))
 
 	// 调用AI API
 	aiResponse, err := h.volcanoClient.CallVolcanoAPI(learningType, learnedContent)
@@ -124,7 +132,7 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 	}
 
 	content := aiResponse.Choices[0].Message.Content
-	log.Printf("AI原始响应: %s", content)
+	log.Printf("🤖 AI原始响应: %s", content[:min(100, len(content))]+"...")
 
 	// 使用改进的解析方法
 	parsedContent, err := h.parseAIContent(content, learningType)
@@ -147,7 +155,7 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 		Date:           time.Now(),
 	}
 
-	log.Printf("创建的学习内容: %+v", learningContent)
+	log.Printf("📝 创建的学习内容: %+v", learningContent)
 
 	// 保存到数据库
 	savedRecord, err := database.SaveLearningRecord(learningType, learningContent)
@@ -161,7 +169,7 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 		return
 	}
 
-	log.Printf("成功保存%s学习记录, ID: %d", models.GetLearningTypeName(learningType), savedRecord.ID)
+	fmt.Printf("✅ 成功保存%s学习记录, ID: %d\n", models.GetLearningTypeName(learningType), savedRecord.ID)
 
 	c.JSON(http.StatusOK, models.APIResponse{
 		Success: true,
@@ -442,4 +450,12 @@ func (h *Handler) GetGlobalStats(c *gin.Context) {
 			Stats: stats,
 		},
 	})
+}
+
+// 辅助函数
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
