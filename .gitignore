@@ -1,0 +1,85 @@
+# 环境变量文件（包含敏感信息）
+.env
+.env.local
+.env.development
+.env.production
+*.env
+
+# Go 编译文件
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+learning-assistant
+main
+
+# Go 测试文件
+*.test
+*.out
+*.prof
+
+# Go 模块缓存
+go.sum
+
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+learning.db
+
+# 日志文件
+*.log
+logs/
+
+# 操作系统生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE 和编辑器文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 临时文件
+tmp/
+temp/
+.tmp/
+
+# 备份文件
+*.bak
+*.backup
+
+# 部署相关
+dist/
+build/
+
+# Node.js (如果使用前端工具)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 其他敏感文件
+*.key
+*.pem
+*.crt
+config/secrets.json
+
+# 本地开发工具
+.air.toml
+air_tmp/
+
+# 覆盖率报告
+coverage.out
+coverage.html
+
+# 文档生成
+docs/build/

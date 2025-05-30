@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>&#x1f4da; &#x6bcf;&#x65e5;&#x5b66;&#x4e60;&#x52a9;&#x624b; API</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+/* From extension bierner.markdown-checkbox */
+.contains-task-list {
+    padding-left: 0;
+}
+
+.contains-task-list li {
+    margin-left: 24px;
+}
+
+.contains-task-list .task-list-item {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.contains-task-list .contains-task-list {
+    padding-left: 20px;
+} 
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="-每日学习助手-api">📚 每日学习助手 API</h1>
+<blockquote>
+<p>基于 AI 的智能学习内容推荐系统，每天为你推送精选的英语谚语、中文古诗词和中医养生知识。</p>
+</blockquote>
+<h2 id="-特性">✨ 特性</h2>
+<ul>
+<li>🤖 <strong>AI 智能推荐</strong>: 集成豆包大模型，生成高质量学习内容</li>
+<li>🔄 <strong>防重复机制</strong>: 智能避免推荐已学过的内容</li>
+<li>📅 <strong>每日缓存</strong>: 同一天所有用户看到相同的精选内容</li>
+<li>🌐 <strong>全球共享</strong>: 无需注册，所有用户共享学习资源</li>
+<li>📊 <strong>学习统计</strong>: 提供详细的学习历史和统计数据</li>
+<li>🚀 <strong>高性能</strong>: Go 语言开发，响应迅速</li>
+</ul>
+<h2 id="-学习内容类型">📖 学习内容类型</h2>
+<h3 id="-英语谚语-english">🇺🇸 英语谚语 (<code>english</code>)</h3>
+<ul>
+<li>精选有教育意义的英语传统谚语、格言、习语</li>
+<li>提供中文释义和关键词汇解析</li>
+<li>帮助提升英语理解能力</li>
+</ul>
+<h3 id="-中文古诗词-chinese">🇨🇳 中文古诗词 (<code>chinese</code>)</h3>
+<ul>
+<li>经典古诗、词、赋等传统文化瑰宝</li>
+<li>包含文化背景和诗词解释</li>
+<li>传承中华传统文化精髓</li>
+</ul>
+<h3 id="-中医养生-tcm">🌿 中医养生 (<code>tcm</code>)</h3>
+<ul>
+<li>《黄帝内经》、《伤寒论》等经典条文</li>
+<li>实用的中医理论和养生方法</li>
+<li>提供临床意义和应用指导</li>
+</ul>
+<h2 id="-快速开始">🚀 快速开始</h2>
+<h3 id="在线体验">在线体验</h3>
+<p>API 已部署到 Vercel，可直接访问：</p>
+<pre><code class="language-bash"><span class="hljs-comment"># 健康检查</span>
+curl https://your-app.vercel.app/api/health
+
+<span class="hljs-comment"># 获取今日英语学习内容</span>
+curl https://your-app.vercel.app/api/today-learning/english
+
+<span class="hljs-comment"># 获取学习历史</span>
+curl https://your-app.vercel.app/api/learning-history
+</code></pre>
+<h3 id="本地开发">本地开发</h3>
+<ol>
+<li><strong>克隆项目</strong></li>
+</ol>
+<pre><code class="language-bash">git <span class="hljs-built_in">clone</span> https://github.com/your-username/everyday-study-backend.git
+<span class="hljs-built_in">cd</span> everyday-study-backend
+</code></pre>
+<ol start="2">
+<li><strong>安装依赖</strong></li>
+</ol>
+<pre><code class="language-bash">go mod tidy
+</code></pre>
+<ol start="3">
+<li><strong>配置环境变量</strong></li>
+</ol>
+<pre><code class="language-bash"><span class="hljs-built_in">cp</span> .env.example .<span class="hljs-built_in">env</span>
+<span class="hljs-comment"># 编辑 .env 文件，添加你的 API 密钥</span>
+</code></pre>
+<ol start="4">
+<li><strong>运行项目</strong></li>
+</ol>
+<pre><code class="language-bash">go run main.go
+</code></pre>
+<p>服务将在 <code>http://localhost:91</code> 启动。</p>
+<h2 id="-api-接口">📡 API 接口</h2>
+<h3 id="基础-url">基础 URL</h3>
+<pre><code>https://your-app.vercel.app/api
+</code></pre>
+<h3 id="接口列表">接口列表</h3>
+<h4 id="1-健康检查">1. 健康检查</h4>
+<pre><code class="language-http">GET /api/health
+</code></pre>
+<p><strong>响应示例:</strong></p>
+<pre><code class="language-json"><span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;服务运行正常&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ok&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;database&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;connected&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;supported_types&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;english&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;chinese&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;tcm&quot;</span><span class="hljs-punctuation">]</span>
+	<span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<h4 id="2-获取今日学习内容">2. 获取今日学习内容</h4>
+<pre><code class="language-http">GET /api/today-learning/{type}
+</code></pre>
+<p><strong>参数:</strong></p>
+<ul>
+<li><code>type</code>: 学习类型 (<code>english</code> | <code>chinese</code> | <code>tcm</code>)</li>
+</ul>
+<p><strong>响应示例:</strong></p>
+<pre><code class="language-json"><span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;获取今日学习内容成功&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;english&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;type_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;英语&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Actions speak louder than words&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;interpretation&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;行动胜过言语。意思是实际行动比空洞的话语更有说服力...&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;key_words&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;actions: 行动&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;speak: 说话&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;louder: 更响亮的&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;date&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2024-12-24&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;from_cache&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span>
+	<span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<h4 id="3-获取学习历史">3. 获取学习历史</h4>
+<pre><code class="language-http">GET /api/learning-history[?limit=10]
+GET /api/learning-history/{type}[?limit=10]
+</code></pre>
+<p><strong>查询参数:</strong></p>
+<ul>
+<li><code>limit</code>: 返回记录数量，默认 10</li>
+</ul>
+<h4 id="4-获取学习统计">4. 获取学习统计</h4>
+<pre><code class="language-http">GET /api/stats
+</code></pre>
+<p><strong>响应示例:</strong></p>
+<pre><code class="language-json"><span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;获取统计信息成功&quot;</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;stats&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+			<span class="hljs-attr">&quot;english&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+				<span class="hljs-attr">&quot;type_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;英语&quot;</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;total_days&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">15</span><span class="hljs-punctuation">,</span>
+				<span class="hljs-attr">&quot;unique_days&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span>
+			<span class="hljs-punctuation">}</span>
+		<span class="hljs-punctuation">}</span>
+	<span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<h2 id="-技术栈">🔧 技术栈</h2>
+<ul>
+<li><strong>后端框架</strong>: <a href="https://gin-gonic.com/">Gin</a> - 高性能 Go Web 框架</li>
+<li><strong>数据库</strong>: <a href="https://sqlite.org/">SQLite</a> + <a href="https://gorm.io/">GORM</a> - 轻量级数据库</li>
+<li><strong>AI 服务</strong>: <a href="https://www.volcengine.com/product/doubao">豆包大模型</a> - 字节跳动大模型服务</li>
+<li><strong>部署平台</strong>: <a href="https://vercel.com/">Vercel</a> - 无服务器部署</li>
+</ul>
+<h2 id="-项目结构">📁 项目结构</h2>
+<pre><code>everyday-study-backend/
+├── main.go                     # 应用入口
+├── go.mod                      # Go 模块依赖
+├── .env.example               # 环境变量模板
+├── README.md                  # 项目说明
+├── internal/                  # 内部包
+│   ├── config/               # 配置管理
+│   │   └── config.go
+│   ├── models/               # 数据模型
+│   │   └── models.go
+│   ├── database/             # 数据库操作
+│   │   └── database.go
+│   ├── api/                  # 外部 API 调用
+│   │   └── volcano.go
+│   ├── middleware/           # 中间件
+│   │   └── error.go
+│   └── handlers/             # HTTP 处理器
+│       └── handlers.go
+└── vercel.json               # Vercel 部署配置
+</code></pre>
+<h2 id="-部署到-vercel">🌍 部署到 Vercel</h2>
+<h3 id="一键部署">一键部署</h3>
+<p><a href="https://vercel.com/new/clone?repository-url=https://github.com/your-username/everyday-study-backend"><img src="https://vercel.com/button" alt="Deploy with Vercel"></a></p>
+<h3 id="手动部署">手动部署</h3>
+<ol>
+<li>
+<p><strong>Fork 本项目</strong></p>
+</li>
+<li>
+<p><strong>在 Vercel 中导入项目</strong></p>
+<ul>
+<li>访问 <a href="https://vercel.com/dashboard">Vercel Dashboard</a></li>
+<li>点击 &quot;New Project&quot;</li>
+<li>导入你的 GitHub 仓库</li>
+</ul>
+</li>
+<li>
+<p><strong>配置环境变量</strong></p>
+<pre><code>ARK_API_KEY=你的豆包API密钥
+ENVIRONMENT=production
+</code></pre>
+</li>
+<li>
+<p><strong>部署完成</strong></p>
+<ul>
+<li>Vercel 会自动构建和部署</li>
+<li>获取你的专属 API 地址</li>
+</ul>
+</li>
+</ol>
+<h3 id="vercel-配置文件">Vercel 配置文件</h3>
+<p>项目包含 <code>vercel.json</code> 配置文件，支持：</p>
+<ul>
+<li>Go 函数自动路由</li>
+<li>CORS 跨域支持</li>
+<li>环境变量配置</li>
+<li>自动 HTTPS</li>
+</ul>
+<h2 id="-环境变量">📋 环境变量</h2>
+<p>创建 <code>.env</code> 文件并配置以下变量：</p>
+<pre><code class="language-bash"><span class="hljs-comment"># 服务器配置</span>
+PORT=91
+ENVIRONMENT=development
+
+<span class="hljs-comment"># 数据库配置</span>
+DATABASE_PATH=learning.db
+
+<span class="hljs-comment"># AI API 配置</span>
+ARK_API_KEY=your_ark_api_key_here
+VOLCANO_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+</code></pre>
+<h2 id="-开发指南">🔨 开发指南</h2>
+<h3 id="本地开发-1">本地开发</h3>
+<pre><code class="language-bash"><span class="hljs-comment"># 安装 Air 热重载工具</span>
+go install github.com/cosmtrek/air@latest
+
+<span class="hljs-comment"># 启动热重载开发</span>
+air
+</code></pre>
+<h3 id="代码规范">代码规范</h3>
+<ul>
+<li>使用 <code>gofmt</code> 格式化代码</li>
+<li>遵循 Go 官方编码规范</li>
+<li>提交前运行测试</li>
+</ul>
+<h3 id="测试">测试</h3>
+<pre><code class="language-bash"><span class="hljs-comment"># 运行测试</span>
+go <span class="hljs-built_in">test</span> ./...
+
+<span class="hljs-comment"># 测试覆盖率</span>
+go <span class="hljs-built_in">test</span> -cover ./...
+</code></pre>
+<h2 id="-使用示例">📊 使用示例</h2>
+<h3 id="javascriptnodejs">JavaScript/Node.js</h3>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">API_BASE</span> = <span class="hljs-string">&quot;https://your-app.vercel.app/api&quot;</span>;
+
+<span class="hljs-comment">// 获取今日英语学习内容</span>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">getTodayEnglish</span>(<span class="hljs-params"></span>) {
+	<span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${API_BASE}</span>/today-learning/english`</span>);
+	<span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> response.<span class="hljs-title function_">json</span>();
+	<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(data.<span class="hljs-property">data</span>.<span class="hljs-property">content</span>);
+}
+
+<span class="hljs-comment">// 获取学习历史</span>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">getHistory</span>(<span class="hljs-params"></span>) {
+	<span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${API_BASE}</span>/learning-history?limit=5`</span>);
+	<span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> response.<span class="hljs-title function_">json</span>();
+	<span class="hljs-keyword">return</span> data.<span class="hljs-property">data</span>.<span class="hljs-property">records</span>;
+}
+</code></pre>
+<h3 id="python">Python</h3>
+<pre><code class="language-python"><span class="hljs-keyword">import</span> requests
+
+API_BASE = <span class="hljs-string">&quot;https://your-app.vercel.app/api&quot;</span>
+
+<span class="hljs-comment"># 获取今日中医学习内容</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">get_today_tcm</span>():
+    response = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{API_BASE}</span>/today-learning/tcm&quot;</span>)
+    data = response.json()
+    <span class="hljs-keyword">return</span> data[<span class="hljs-string">&quot;data&quot;</span>]
+
+<span class="hljs-comment"># 获取统计信息</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">get_stats</span>():
+    response = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{API_BASE}</span>/stats&quot;</span>)
+    <span class="hljs-keyword">return</span> response.json()[<span class="hljs-string">&quot;data&quot;</span>][<span class="hljs-string">&quot;stats&quot;</span>]
+</code></pre>
+<h3 id="curl-命令">curl 命令</h3>
+<pre><code class="language-bash"><span class="hljs-comment"># 获取今日中文古诗词</span>
+curl -X GET <span class="hljs-string">&quot;https://your-app.vercel.app/api/today-learning/chinese&quot;</span> \
+  -H <span class="hljs-string">&quot;Accept: application/json&quot;</span>
+
+<span class="hljs-comment"># 获取最近5条学习记录</span>
+curl -X GET <span class="hljs-string">&quot;https://your-app.vercel.app/api/learning-history?limit=5&quot;</span> \
+  -H <span class="hljs-string">&quot;Accept: application/json&quot;</span>
+</code></pre>
+<h2 id="-贡献指南">🤝 贡献指南</h2>
+<p>欢迎贡献代码！请遵循以下步骤：</p>
+<ol>
+<li>Fork 本项目</li>
+<li>创建特性分支 (<code>git checkout -b feature/amazing-feature</code>)</li>
+<li>提交更改 (<code>git commit -m 'Add some amazing feature'</code>)</li>
+<li>推送到分支 (<code>git push origin feature/amazing-feature</code>)</li>
+<li>打开 Pull Request</li>
+</ol>
+<h2 id="-更新日志">📝 更新日志</h2>
+<h3 id="v100-2024-12-24">v1.0.0 (2024-12-24)</h3>
+<ul>
+<li>✨ 初始版本发布</li>
+<li>🚀 支持三种学习内容类型</li>
+<li>🤖 集成豆包大模型 API</li>
+<li>📦 Vercel 无服务器部署支持</li>
+</ul>
+<h2 id="-许可证">📄 许可证</h2>
+<p>本项目基于 <a href="LICENSE">MIT License</a> 开源协议。</p>
+<h2 id="-特别感谢">💡 特别感谢</h2>
+<ul>
+<li><a href="https://gin-gonic.com/">Gin Web Framework</a> - 优秀的 Go Web 框架</li>
+<li><a href="https://gorm.io/">GORM</a> - 强大的 Go ORM 库</li>
+<li><a href="https://www.volcengine.com/product/doubao">豆包大模型</a> - 提供 AI 能力支持</li>
+<li><a href="https://vercel.com/">Vercel</a> - 优秀的部署平台</li>
+</ul>
+<h2 id="-联系方式">📞 联系方式</h2>
+<ul>
+<li>项目地址: <a href="https://github.com/your-username/everyday-study-backend">GitHub</a></li>
+<li>问题反馈: <a href="https://github.com/your-username/everyday-study-backend/issues">Issues</a></li>
+<li>作者邮箱: <a href="mailto:your-email@example.com">your-email@example.com</a></li>
+</ul>
+<hr>
+<p>⭐ 如果这个项目对你有帮助，请给个 Star 支持一下！</p>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
