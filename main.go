@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"everyday-study-backend/internal/config"
 	"everyday-study-backend/internal/database"
@@ -66,9 +64,15 @@ func main() {
 		})
 	})
 
+	// Render 端口配置 - 关键修复！
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = cfg.Port
+	}
+
 	// 启动信息
 	fmt.Println("🚀 学习助手后端服务启动成功！")
-	fmt.Printf("📡 服务地址: http://localhost:%s\n", cfg.Port)
+	fmt.Printf("📡 服务地址: http://0.0.0.0:%s\n", port)
 	fmt.Println("📊 API文档:")
 	fmt.Println("   GET  /api/health - 健康检查")
 	fmt.Println("   GET  /api/today-learning/{type} - 获取今日学习内容")
@@ -78,26 +82,8 @@ func main() {
 	fmt.Println("📚 支持的学习类型: english, chinese, tcm")
 	fmt.Println("💡 注意：现在所有用户在同一天看到相同内容！")
 
-	// 优雅关闭
-	go func() {
-		if err := router.Run(":" + cfg.Port); err != nil {
-			log.Fatal("服务启动失败:", err)
-		}
-	}()
-
-	// 等待中断信号
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-
-	fmt.Println("\n📴 正在关闭服务器...")
-	
-	// 关闭数据库连接
-	sqlDB, err := db.DB()
-	if err == nil {
-		sqlDB.Close()
-		fmt.Println("✅ 数据库连接已关闭")
+	// 简化启动逻辑 - 移除优雅关闭的复杂性
+	if err := router.Run("0.0.0.0:" + port); err != nil {
+		log.Fatal("服务启动失败:", err)
 	}
-	
-	fmt.Println("👋 服务器已关闭")
 }
