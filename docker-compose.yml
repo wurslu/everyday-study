@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  learning-assistant:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: learning-assistant
+    ports:
+      - "91:91"
+    environment:
+      - PORT=91
+      - ENVIRONMENT=production
+      - ARK_API_KEY=${ARK_API_KEY}
+      - VOLCANO_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+      - DATABASE_PATH=/app/data/learning.db
+    volumes:
+      # 持久化数据库文件
+      - learning_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:91/api/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - learning_network
+
+  # 可选：添加 Nginx 反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: learning-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - learning-assistant
+    restart: unless-stopped
+    networks:
+      - learning_network
+    profiles:
+      - with-nginx
+
+volumes:
+  learning_data:
+    driver: local
+
+networks:
+  learning_network:
+    driver: bridge
