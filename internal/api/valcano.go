@@ -13,8 +13,8 @@ import (
 )
 
 type VolcanoClient struct {
-	client  *http.Client
-	config  *config.Config
+	client *http.Client
+	config *config.Config
 }
 
 func NewVolcanoClient(cfg *config.Config) *VolcanoClient {
@@ -29,7 +29,7 @@ func NewVolcanoClient(cfg *config.Config) *VolcanoClient {
 // 调用 Volcano API
 func (vc *VolcanoClient) CallVolcanoAPI(learningType string, learned []string) (*models.VolcanoAPIResponse, error) {
 	systemPrompt := vc.generatePrompt(learningType, learned)
-	
+
 	request := models.VolcanoAPIRequest{
 		Model: "doubao-1.5-thinking-pro-250415",
 		Messages: []models.Message{
@@ -115,8 +115,8 @@ func (vc *VolcanoClient) generatePrompt(learningType string, learned []string) s
 </learned_poems>
 在挑选新的诗词时，请确保它与已学内容不重复，句子来源可以是古诗、词、赋等中国传统文化中的诗词歌赋。
 请以字符串json的格式输出内容，包含以下字段：
-- poem：诗词原文
-- interpretation：诗词释义和背景介绍
+- poem：一句精选诗词，包含作者和出处
+- interpretation：诗词释义
 - key_words：诗词中的关键词汇解析，格式为数组，每个元素包含word和meaning字段`, learnedText)
 
 	case "tcm":
