@@ -31,18 +31,31 @@ if [ ! -f ".env" ]; then
     if [ -f ".env.docker" ]; then
         echo -e "${BLUE}📋 复制 .env.docker 模板...${NC}"
         cp .env.docker .env
-        echo -e "${YELLOW}⚠️  请编辑 .env 文件，填入真实的 ARK_API_KEY${NC}"
+        echo -e "${YELLOW}⚠️  请编辑 .env 文件，填入真实的 VOLCANO_API_KEY${NC}"
         echo -e "${YELLOW}⚠️  编辑完成后请重新运行此脚本${NC}"
         exit 1
     else
-        echo -e "${RED}❌ 未找到环境变量模板文件${NC}"
+        echo -e "${YELLOW}📝 创建默认 .env 文件...${NC}"
+        cat > .env << EOF
+# 服务配置
+PORT=91
+ENVIRONMENT=production
+DATABASE_PATH=/app/data/learning.db
+
+# API 配置（必需）
+VOLCANO_API_KEY=请填入你的豆包API密钥
+VOLCANO_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+EOF
+        echo -e "${YELLOW}⚠️  请编辑 .env 文件，填入真实的 VOLCANO_API_KEY${NC}"
+        echo -e "${YELLOW}⚠️  编辑完成后请重新运行此脚本${NC}"
         exit 1
     fi
 fi
 
-# 检查 ARK_API_KEY 是否设置
-if ! grep -q "^ARK_API_KEY=.*[^=]" .env; then
-    echo -e "${RED}❌ ARK_API_KEY 未设置，请编辑 .env 文件${NC}"
+# 检查 VOLCANO_API_KEY 是否设置
+if ! grep -q "^VOLCANO_API_KEY=.*[^=]" .env || grep -q "^VOLCANO_API_KEY=请填入你的豆包API密钥" .env; then
+    echo -e "${RED}❌ VOLCANO_API_KEY 未设置或使用默认值，请编辑 .env 文件${NC}"
+    echo -e "${YELLOW}💡 提示：编辑 .env 文件，将 VOLCANO_API_KEY 设置为你的真实API密钥${NC}"
     exit 1
 fi
 
@@ -93,6 +106,10 @@ if curl -f -s http://localhost:91/api/health > /dev/null; then
     echo "   停止服务: docker-compose down"
     echo "   重启服务: docker-compose restart"
     echo "   查看状态: docker-compose ps"
+    echo ""
+    echo -e "${BLUE}📁 数据文件位置：${NC}"
+    echo "   数据库: ./data/learning.db"
+    echo "   备份: cp ./data/learning.db ./backup/learning_$(date +%Y%m%d_%H%M%S).db"
 else
     echo -e "${RED}❌ 服务启动失败${NC}"
     echo -e "${YELLOW}📋 查看日志:${NC}"
