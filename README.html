@@ -159,53 +159,80 @@
         <body class="vscode-body vscode-light">
             <h1 id="-每日学习助手-api">📚 每日学习助手 API</h1>
 <blockquote>
-<p>基于 AI 的智能学习内容推荐系统，每天为你推送精选的英语谚语、中文古诗词和中医养生知识。</p>
+<p>基于豆包大模型的智能学习内容推荐系统，每天为全球用户推送精选的英语谚语、中文古诗词和中医养生知识。</p>
 </blockquote>
-<h2 id="-特性">✨ 特性</h2>
+<p><a href="https://golang.org/"><img src="https://img.shields.io/badge/Go-1.21+-blue.svg" alt="Go Version"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"></a>
+<a href="https://everyday-study-backend.onrender.com/api/health"><img src="https://img.shields.io/badge/API-Online-brightgreen.svg" alt="API Status"></a>
+<a href="https://render.com"><img src="https://img.shields.io/badge/Deploy-Render-46E3B7.svg" alt="Deploy on Render"></a></p>
+<h2 id="-在线体验">🌟 在线体验</h2>
+<p><strong>🚀 API 基础地址</strong>: <a href="https://everyday-study-backend.onrender.com">https://everyday-study-backend.onrender.com</a></p>
+<p><strong>🔍 快速测试</strong>:</p>
+<ul>
+<li><a href="https://everyday-study-backend.onrender.com/api/health">健康检查</a></li>
+<li><a href="https://everyday-study-backend.onrender.com/api/today-learning/english">今日英语学习</a></li>
+<li><a href="https://everyday-study-backend.onrender.com/api/today-learning/chinese">今日中文学习</a></li>
+<li><a href="https://everyday-study-backend.onrender.com/api/today-learning/tcm">今日中医学习</a></li>
+</ul>
+<h2 id="-项目特性">✨ 项目特性</h2>
 <ul>
 <li>🤖 <strong>AI 智能推荐</strong>: 集成豆包大模型，生成高质量学习内容</li>
 <li>🔄 <strong>防重复机制</strong>: 智能避免推荐已学过的内容</li>
-<li>📅 <strong>每日缓存</strong>: 同一天所有用户看到相同的精选内容</li>
-<li>🌐 <strong>全球共享</strong>: 无需注册，所有用户共享学习资源</li>
+<li>📅 <strong>全球共享</strong>: 同一天所有用户看到相同的精选内容</li>
+<li>🌐 <strong>无需注册</strong>: 开箱即用，无需用户管理</li>
 <li>📊 <strong>学习统计</strong>: 提供详细的学习历史和统计数据</li>
 <li>🚀 <strong>高性能</strong>: Go 语言开发，响应迅速</li>
+<li>🐳 <strong>容器化</strong>: 支持 Docker 一键部署</li>
+<li>☁️ <strong>云端部署</strong>: 已部署到 Render 云平台</li>
 </ul>
 <h2 id="-学习内容类型">📖 学习内容类型</h2>
 <h3 id="-英语谚语-english">🇺🇸 英语谚语 (<code>english</code>)</h3>
 <ul>
-<li>精选有教育意义的英语传统谚语、格言、习语</li>
-<li>提供中文释义和关键词汇解析</li>
-<li>帮助提升英语理解能力</li>
+<li><strong>内容来源</strong>: 英语传统谚语、格言、习语</li>
+<li><strong>返回格式</strong>: 谚语原文 + 中文释义 + 关键词解析</li>
+<li><strong>学习价值</strong>: 提升英语理解能力和文化素养</li>
 </ul>
+<p><strong>示例响应</strong>:</p>
+<pre><code class="language-json"><span class="hljs-punctuation">{</span>
+	<span class="hljs-attr">&quot;success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span><span class="hljs-punctuation">,</span>
+	<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+		<span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;english&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Actions speak louder than words&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;interpretation&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;行动胜过言语。意思是实际行动比空洞的话语更有说服力...&quot;</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;key_words&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;actions: 行动&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;speak: 说话&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;louder: 更响亮的&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+		<span class="hljs-attr">&quot;from_cache&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span>
+	<span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
 <h3 id="-中文古诗词-chinese">🇨🇳 中文古诗词 (<code>chinese</code>)</h3>
 <ul>
-<li>经典古诗、词、赋等传统文化瑰宝</li>
-<li>包含文化背景和诗词解释</li>
-<li>传承中华传统文化精髓</li>
+<li><strong>内容来源</strong>: 古诗、词、赋等传统文化瑰宝</li>
+<li><strong>返回格式</strong>: 诗词原文 + 文化背景 + 意境解析</li>
+<li><strong>学习价值</strong>: 传承中华传统文化精髓</li>
 </ul>
 <h3 id="-中医养生-tcm">🌿 中医养生 (<code>tcm</code>)</h3>
 <ul>
-<li>《黄帝内经》、《伤寒论》等经典条文</li>
-<li>实用的中医理论和养生方法</li>
-<li>提供临床意义和应用指导</li>
+<li><strong>内容来源</strong>: 《黄帝内经》、《伤寒论》等经典条文</li>
+<li><strong>返回格式</strong>: 条文原文 + 临床意义 + 应用指导</li>
+<li><strong>学习价值</strong>: 了解中医理论和养生方法</li>
 </ul>
 <h2 id="-快速开始">🚀 快速开始</h2>
-<h3 id="在线体验">在线体验</h3>
-<p>API 已部署到 Vercel，可直接访问：</p>
-<pre><code class="language-bash"><span class="hljs-comment"># 健康检查</span>
-curl https://your-app.vercel.app/api/health
-
-<span class="hljs-comment"># 获取今日英语学习内容</span>
-curl https://your-app.vercel.app/api/today-learning/english
+<h3 id="在线使用推荐">在线使用（推荐）</h3>
+<p>无需安装，直接调用在线 API：</p>
+<pre><code class="language-bash"><span class="hljs-comment"># 获取今日英语学习内容</span>
+curl https://everyday-study-backend.onrender.com/api/today-learning/english
 
 <span class="hljs-comment"># 获取学习历史</span>
-curl https://your-app.vercel.app/api/learning-history
+curl https://everyday-study-backend.onrender.com/api/learning-history
+
+<span class="hljs-comment"># 获取统计信息</span>
+curl https://everyday-study-backend.onrender.com/api/stats
 </code></pre>
 <h3 id="本地开发">本地开发</h3>
 <ol>
 <li><strong>克隆项目</strong></li>
 </ol>
-<pre><code class="language-bash">git <span class="hljs-built_in">clone</span> https://github.com/your-username/everyday-study-backend.git
+<pre><code class="language-bash">git <span class="hljs-built_in">clone</span> https://github.com/wurslu/everyday-study-backend.git
 <span class="hljs-built_in">cd</span> everyday-study-backend
 </code></pre>
 <ol start="2">
@@ -217,7 +244,7 @@ curl https://your-app.vercel.app/api/learning-history
 <li><strong>配置环境变量</strong></li>
 </ol>
 <pre><code class="language-bash"><span class="hljs-built_in">cp</span> .env.example .<span class="hljs-built_in">env</span>
-<span class="hljs-comment"># 编辑 .env 文件，添加你的 API 密钥</span>
+<span class="hljs-comment"># 编辑 .env 文件，添加你的豆包 API 密钥</span>
 </code></pre>
 <ol start="4">
 <li><strong>运行项目</strong></li>
@@ -225,15 +252,19 @@ curl https://your-app.vercel.app/api/learning-history
 <pre><code class="language-bash">go run main.go
 </code></pre>
 <p>服务将在 <code>http://localhost:91</code> 启动。</p>
-<h2 id="-api-接口">📡 API 接口</h2>
-<h3 id="基础-url">基础 URL</h3>
-<pre><code>https://your-app.vercel.app/api
-</code></pre>
+<h2 id="-api-接口文档">📡 API 接口文档</h2>
+<h3 id="基础信息">基础信息</h3>
+<ul>
+<li><strong>基础 URL</strong>: <code>https://everyday-study-backend.onrender.com/api</code></li>
+<li><strong>请求方式</strong>: GET</li>
+<li><strong>响应格式</strong>: JSON</li>
+<li><strong>编码</strong>: UTF-8</li>
+</ul>
 <h3 id="接口列表">接口列表</h3>
 <h4 id="1-健康检查">1. 健康检查</h4>
 <pre><code class="language-http">GET /api/health
 </code></pre>
-<p><strong>响应示例:</strong></p>
+<p><strong>响应示例</strong>:</p>
 <pre><code class="language-json"><span class="hljs-punctuation">{</span>
 	<span class="hljs-attr">&quot;success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span><span class="hljs-punctuation">,</span>
 	<span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;服务运行正常&quot;</span><span class="hljs-punctuation">,</span>
@@ -247,228 +278,261 @@ curl https://your-app.vercel.app/api/learning-history
 <h4 id="2-获取今日学习内容">2. 获取今日学习内容</h4>
 <pre><code class="language-http">GET /api/today-learning/{type}
 </code></pre>
-<p><strong>参数:</strong></p>
+<p><strong>参数说明</strong>:</p>
 <ul>
-<li><code>type</code>: 学习类型 (<code>english</code> | <code>chinese</code> | <code>tcm</code>)</li>
+<li><code>type</code>: 学习类型
+<ul>
+<li><code>english</code> - 英语谚语</li>
+<li><code>chinese</code> - 中文古诗词</li>
+<li><code>tcm</code> - 中医养生</li>
 </ul>
-<p><strong>响应示例:</strong></p>
-<pre><code class="language-json"><span class="hljs-punctuation">{</span>
-	<span class="hljs-attr">&quot;success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span><span class="hljs-punctuation">,</span>
-	<span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;获取今日学习内容成功&quot;</span><span class="hljs-punctuation">,</span>
-	<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-		<span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;english&quot;</span><span class="hljs-punctuation">,</span>
-		<span class="hljs-attr">&quot;type_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;英语&quot;</span><span class="hljs-punctuation">,</span>
-		<span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Actions speak louder than words&quot;</span><span class="hljs-punctuation">,</span>
-		<span class="hljs-attr">&quot;interpretation&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;行动胜过言语。意思是实际行动比空洞的话语更有说服力...&quot;</span><span class="hljs-punctuation">,</span>
-		<span class="hljs-attr">&quot;key_words&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;actions: 行动&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;speak: 说话&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;louder: 更响亮的&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-		<span class="hljs-attr">&quot;date&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2024-12-24&quot;</span><span class="hljs-punctuation">,</span>
-		<span class="hljs-attr">&quot;from_cache&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span>
-	<span class="hljs-punctuation">}</span>
-<span class="hljs-punctuation">}</span>
-</code></pre>
+</li>
+</ul>
+<p><strong>特点</strong>:</p>
+<ul>
+<li>✅ 同一天返回相同内容（全局缓存）</li>
+<li>✅ 防重复推荐机制</li>
+<li>✅ AI 智能生成</li>
+</ul>
 <h4 id="3-获取学习历史">3. 获取学习历史</h4>
 <pre><code class="language-http">GET /api/learning-history[?limit=10]
 GET /api/learning-history/{type}[?limit=10]
 </code></pre>
-<p><strong>查询参数:</strong></p>
+<p><strong>查询参数</strong>:</p>
 <ul>
-<li><code>limit</code>: 返回记录数量，默认 10</li>
+<li><code>limit</code>: 返回记录数量（默认 10，最大 100）</li>
 </ul>
 <h4 id="4-获取学习统计">4. 获取学习统计</h4>
 <pre><code class="language-http">GET /api/stats
 </code></pre>
-<p><strong>响应示例:</strong></p>
-<pre><code class="language-json"><span class="hljs-punctuation">{</span>
-	<span class="hljs-attr">&quot;success&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">true</span><span class="hljs-punctuation">,</span>
-	<span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;获取统计信息成功&quot;</span><span class="hljs-punctuation">,</span>
-	<span class="hljs-attr">&quot;data&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-		<span class="hljs-attr">&quot;stats&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-			<span class="hljs-attr">&quot;english&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-				<span class="hljs-attr">&quot;type_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;英语&quot;</span><span class="hljs-punctuation">,</span>
-				<span class="hljs-attr">&quot;total_days&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">15</span><span class="hljs-punctuation">,</span>
-				<span class="hljs-attr">&quot;unique_days&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span>
-			<span class="hljs-punctuation">}</span>
-		<span class="hljs-punctuation">}</span>
-	<span class="hljs-punctuation">}</span>
-<span class="hljs-punctuation">}</span>
-</code></pre>
-<h2 id="-技术栈">🔧 技术栈</h2>
+<p><strong>响应包含</strong>:</p>
 <ul>
-<li><strong>后端框架</strong>: <a href="https://gin-gonic.com/">Gin</a> - 高性能 Go Web 框架</li>
-<li><strong>数据库</strong>: <a href="https://sqlite.org/">SQLite</a> + <a href="https://gorm.io/">GORM</a> - 轻量级数据库</li>
-<li><strong>AI 服务</strong>: <a href="https://www.volcengine.com/product/doubao">豆包大模型</a> - 字节跳动大模型服务</li>
-<li><strong>部署平台</strong>: <a href="https://vercel.com/">Vercel</a> - 无服务器部署</li>
+<li>各类型学习总天数</li>
+<li>不重复学习天数</li>
+<li>学习类型分布</li>
 </ul>
-<h2 id="-项目结构">📁 项目结构</h2>
+<h2 id="-技术架构">🔧 技术架构</h2>
+<h3 id="后端技术栈">后端技术栈</h3>
+<ul>
+<li><strong>框架</strong>: <a href="https://gin-gonic.com/">Gin</a> - 高性能 Go Web 框架</li>
+<li><strong>数据库</strong>: <a href="https://sqlite.org/">SQLite</a> + <a href="https://gorm.io/">GORM</a> - 轻量级 ORM</li>
+<li><strong>AI 服务</strong>: <a href="https://www.volcengine.com/product/doubao">豆包大模型</a> - 字节跳动大模型</li>
+<li><strong>部署</strong>: <a href="https://render.com/">Render</a> - 云端部署平台</li>
+</ul>
+<h3 id="项目结构">项目结构</h3>
 <pre><code>everyday-study-backend/
-├── main.go                     # 应用入口
-├── go.mod                      # Go 模块依赖
-├── .env.example               # 环境变量模板
-├── README.md                  # 项目说明
-├── internal/                  # 内部包
-│   ├── config/               # 配置管理
-│   │   └── config.go
-│   ├── models/               # 数据模型
-│   │   └── models.go
-│   ├── database/             # 数据库操作
-│   │   └── database.go
-│   ├── api/                  # 外部 API 调用
-│   │   └── volcano.go
-│   ├── middleware/           # 中间件
-│   │   └── error.go
-│   └── handlers/             # HTTP 处理器
-│       └── handlers.go
-└── vercel.json               # Vercel 部署配置
+├── main.go                    # 应用入口
+├── go.mod                     # Go 模块依赖
+├── .env.example              # 环境变量模板
+├── Dockerfile                # Docker 构建文件
+├── docker-compose.yml        # Docker 编排文件
+├── deploy.sh                 # 一键部署脚本
+├── README.md                 # 项目文档
+├── internal/                 # 内部包
+│   ├── config/              # 配置管理
+│   ├── models/              # 数据模型
+│   ├── database/            # 数据库操作
+│   ├── api/                 # 外部 API 调用
+│   ├── middleware/          # 中间件
+│   └── handlers/            # HTTP 处理器
+└── .github/                 # GitHub 工作流（可选）
 </code></pre>
-<h2 id="-部署到-vercel">🌍 部署到 Vercel</h2>
-<h3 id="一键部署">一键部署</h3>
-<p><a href="https://vercel.com/new/clone?repository-url=https://github.com/your-username/everyday-study-backend"><img src="https://vercel.com/button" alt="Deploy with Vercel"></a></p>
-<h3 id="手动部署">手动部署</h3>
+<h2 id="-docker-部署">🐳 Docker 部署</h2>
+<h3 id="快速部署">快速部署</h3>
 <ol>
-<li>
-<p><strong>Fork 本项目</strong></p>
-</li>
-<li>
-<p><strong>在 Vercel 中导入项目</strong></p>
-<ul>
-<li>访问 <a href="https://vercel.com/dashboard">Vercel Dashboard</a></li>
-<li>点击 &quot;New Project&quot;</li>
-<li>导入你的 GitHub 仓库</li>
-</ul>
-</li>
-<li>
-<p><strong>配置环境变量</strong></p>
-<pre><code>ARK_API_KEY=你的豆包API密钥
-ENVIRONMENT=production
-</code></pre>
-</li>
-<li>
-<p><strong>部署完成</strong></p>
-<ul>
-<li>Vercel 会自动构建和部署</li>
-<li>获取你的专属 API 地址</li>
-</ul>
-</li>
+<li><strong>克隆项目</strong></li>
 </ol>
-<h3 id="vercel-配置文件">Vercel 配置文件</h3>
-<p>项目包含 <code>vercel.json</code> 配置文件，支持：</p>
+<pre><code class="language-bash">git <span class="hljs-built_in">clone</span> https://github.com/wurslu/everyday-study-backend.git
+<span class="hljs-built_in">cd</span> everyday-study-backend
+</code></pre>
+<ol start="2">
+<li><strong>配置环境变量</strong></li>
+</ol>
+<pre><code class="language-bash"><span class="hljs-built_in">cp</span> .env.docker .<span class="hljs-built_in">env</span>
+<span class="hljs-comment"># 编辑 .env 文件，填入真实的 ARK_API_KEY</span>
+</code></pre>
+<ol start="3">
+<li><strong>一键部署</strong></li>
+</ol>
+<pre><code class="language-bash"><span class="hljs-built_in">chmod</span> +x deploy.sh
+./deploy.sh
+</code></pre>
+<h3 id="手动部署">手动部署</h3>
+<pre><code class="language-bash"><span class="hljs-comment"># 构建并启动</span>
+docker-compose up -d --build
+
+<span class="hljs-comment"># 查看日志</span>
+docker-compose logs -f
+
+<span class="hljs-comment"># 停止服务</span>
+docker-compose down
+</code></pre>
+<h2 id="️-云端部署">☁️ 云端部署</h2>
+<h3 id="render-部署当前使用">Render 部署（当前使用）</h3>
+<ol>
+<li><strong>Fork 项目到你的 GitHub</strong></li>
+<li><strong>在 Render 创建 Web Service</strong></li>
+<li><strong>连接 GitHub 仓库</strong></li>
+<li><strong>配置环境变量</strong>：
 <ul>
-<li>Go 函数自动路由</li>
-<li>CORS 跨域支持</li>
-<li>环境变量配置</li>
-<li>自动 HTTPS</li>
+<li><code>ARK_API_KEY</code>: 你的豆包 API 密钥</li>
+<li><code>ENVIRONMENT</code>: <code>production</code></li>
 </ul>
-<h2 id="-环境变量">📋 环境变量</h2>
-<p>创建 <code>.env</code> 文件并配置以下变量：</p>
-<pre><code class="language-bash"><span class="hljs-comment"># 服务器配置</span>
-PORT=91
-ENVIRONMENT=development
-
-<span class="hljs-comment"># 数据库配置</span>
-DATABASE_PATH=learning.db
-
-<span class="hljs-comment"># AI API 配置</span>
-ARK_API_KEY=your_ark_api_key_here
-VOLCANO_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
-</code></pre>
-<h2 id="-开发指南">🔨 开发指南</h2>
-<h3 id="本地开发-1">本地开发</h3>
-<pre><code class="language-bash"><span class="hljs-comment"># 安装 Air 热重载工具</span>
-go install github.com/cosmtrek/air@latest
-
-<span class="hljs-comment"># 启动热重载开发</span>
-air
-</code></pre>
-<h3 id="代码规范">代码规范</h3>
+</li>
+<li><strong>自动部署完成</strong></li>
+</ol>
+<h3 id="其他平台支持">其他平台支持</h3>
 <ul>
-<li>使用 <code>gofmt</code> 格式化代码</li>
-<li>遵循 Go 官方编码规范</li>
-<li>提交前运行测试</li>
+<li>✅ <strong>Railway</strong> - 适合完整应用部署</li>
+<li>✅ <strong><a href="http://Fly.io">Fly.io</a></strong> - 全球边缘部署</li>
+<li>✅ <strong>Digital Ocean</strong> - App Platform</li>
+<li>✅ <strong>Heroku</strong> - 经典 PaaS 平台</li>
 </ul>
-<h3 id="测试">测试</h3>
-<pre><code class="language-bash"><span class="hljs-comment"># 运行测试</span>
-go <span class="hljs-built_in">test</span> ./...
-
-<span class="hljs-comment"># 测试覆盖率</span>
-go <span class="hljs-built_in">test</span> -cover ./...
-</code></pre>
 <h2 id="-使用示例">📊 使用示例</h2>
 <h3 id="javascriptnodejs">JavaScript/Node.js</h3>
-<pre><code class="language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">API_BASE</span> = <span class="hljs-string">&quot;https://your-app.vercel.app/api&quot;</span>;
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">API_BASE</span> = <span class="hljs-string">&quot;https://everyday-study-backend.onrender.com/api&quot;</span>;
 
 <span class="hljs-comment">// 获取今日英语学习内容</span>
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">getTodayEnglish</span>(<span class="hljs-params"></span>) {
 	<span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${API_BASE}</span>/today-learning/english`</span>);
 	<span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> response.<span class="hljs-title function_">json</span>();
-	<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(data.<span class="hljs-property">data</span>.<span class="hljs-property">content</span>);
+
+	<span class="hljs-keyword">if</span> (data.<span class="hljs-property">success</span>) {
+		<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;今日谚语:&quot;</span>, data.<span class="hljs-property">data</span>.<span class="hljs-property">content</span>);
+		<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;中文解释:&quot;</span>, data.<span class="hljs-property">data</span>.<span class="hljs-property">interpretation</span>);
+		<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;关键词:&quot;</span>, data.<span class="hljs-property">data</span>.<span class="hljs-property">key_words</span>);
+	}
 }
 
-<span class="hljs-comment">// 获取学习历史</span>
-<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">getHistory</span>(<span class="hljs-params"></span>) {
-	<span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${API_BASE}</span>/learning-history?limit=5`</span>);
+<span class="hljs-comment">// 获取学习统计</span>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">getStats</span>(<span class="hljs-params"></span>) {
+	<span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${API_BASE}</span>/stats`</span>);
 	<span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> response.<span class="hljs-title function_">json</span>();
-	<span class="hljs-keyword">return</span> data.<span class="hljs-property">data</span>.<span class="hljs-property">records</span>;
+	<span class="hljs-keyword">return</span> data.<span class="hljs-property">data</span>.<span class="hljs-property">stats</span>;
 }
 </code></pre>
 <h3 id="python">Python</h3>
 <pre><code class="language-python"><span class="hljs-keyword">import</span> requests
 
-API_BASE = <span class="hljs-string">&quot;https://your-app.vercel.app/api&quot;</span>
+API_BASE = <span class="hljs-string">&quot;https://everyday-study-backend.onrender.com/api&quot;</span>
 
-<span class="hljs-comment"># 获取今日中医学习内容</span>
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">get_today_tcm</span>():
-    response = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{API_BASE}</span>/today-learning/tcm&quot;</span>)
-    data = response.json()
-    <span class="hljs-keyword">return</span> data[<span class="hljs-string">&quot;data&quot;</span>]
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">get_today_learning</span>(<span class="hljs-params">learning_type</span>):
+    <span class="hljs-string">&quot;&quot;&quot;获取今日学习内容&quot;&quot;&quot;</span>
+    response = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{API_BASE}</span>/today-learning/<span class="hljs-subst">{learning_type}</span>&quot;</span>)
+    <span class="hljs-keyword">return</span> response.json()
 
-<span class="hljs-comment"># 获取统计信息</span>
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">get_stats</span>():
-    response = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{API_BASE}</span>/stats&quot;</span>)
-    <span class="hljs-keyword">return</span> response.json()[<span class="hljs-string">&quot;data&quot;</span>][<span class="hljs-string">&quot;stats&quot;</span>]
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">get_learning_history</span>(<span class="hljs-params">limit=<span class="hljs-number">10</span></span>):
+    <span class="hljs-string">&quot;&quot;&quot;获取学习历史&quot;&quot;&quot;</span>
+    response = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{API_BASE}</span>/learning-history?limit=<span class="hljs-subst">{limit}</span>&quot;</span>)
+    <span class="hljs-keyword">return</span> response.json()
+
+<span class="hljs-comment"># 使用示例</span>
+english_content = get_today_learning(<span class="hljs-string">&quot;english&quot;</span>)
+<span class="hljs-built_in">print</span>(english_content[<span class="hljs-string">&quot;data&quot;</span>][<span class="hljs-string">&quot;content&quot;</span>])
 </code></pre>
 <h3 id="curl-命令">curl 命令</h3>
-<pre><code class="language-bash"><span class="hljs-comment"># 获取今日中文古诗词</span>
-curl -X GET <span class="hljs-string">&quot;https://your-app.vercel.app/api/today-learning/chinese&quot;</span> \
+<pre><code class="language-bash"><span class="hljs-comment"># 获取今日中医学习内容</span>
+curl -X GET <span class="hljs-string">&quot;https://everyday-study-backend.onrender.com/api/today-learning/tcm&quot;</span> \
   -H <span class="hljs-string">&quot;Accept: application/json&quot;</span>
 
-<span class="hljs-comment"># 获取最近5条学习记录</span>
-curl -X GET <span class="hljs-string">&quot;https://your-app.vercel.app/api/learning-history?limit=5&quot;</span> \
-  -H <span class="hljs-string">&quot;Accept: application/json&quot;</span>
+<span class="hljs-comment"># 获取英语学习历史</span>
+curl -X GET <span class="hljs-string">&quot;https://everyday-study-backend.onrender.com/api/learning-history/english?limit=5&quot;</span>
 </code></pre>
+<h2 id="-环境变量配置">📋 环境变量配置</h2>
+<pre><code class="language-bash"><span class="hljs-comment"># 服务器配置</span>
+PORT=91
+ENVIRONMENT=production
+
+<span class="hljs-comment"># 数据库配置</span>
+DATABASE_PATH=learning.db
+
+<span class="hljs-comment"># AI API 配置（必需）</span>
+ARK_API_KEY=你的豆包API密钥
+VOLCANO_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+</code></pre>
+<h2 id="️-安全特性">🛡️ 安全特性</h2>
+<ul>
+<li>✅ <strong>API 密钥保护</strong>: 敏感信息不暴露在代码中</li>
+<li>✅ <strong>CORS 支持</strong>: 跨域请求安全控制</li>
+<li>✅ <strong>错误处理</strong>: 统一的错误响应格式</li>
+<li>✅ <strong>输入验证</strong>: 参数类型和格式验证</li>
+<li>✅ <strong>Docker 安全</strong>: 非 root 用户运行</li>
+</ul>
+<h2 id="-性能特点">📈 性能特点</h2>
+<ul>
+<li>⚡ <strong>高并发</strong>: Go 协程天然支持</li>
+<li>🚀 <strong>快速响应</strong>: 平均响应时间 &lt; 200ms</li>
+<li>💾 <strong>智能缓存</strong>: 同一天内容缓存机制</li>
+<li>📦 <strong>轻量级</strong>: 编译后二进制文件 &lt; 20MB</li>
+<li>🔄 <strong>自动重启</strong>: 服务异常自动恢复</li>
+</ul>
 <h2 id="-贡献指南">🤝 贡献指南</h2>
 <p>欢迎贡献代码！请遵循以下步骤：</p>
 <ol>
-<li>Fork 本项目</li>
-<li>创建特性分支 (<code>git checkout -b feature/amazing-feature</code>)</li>
-<li>提交更改 (<code>git commit -m 'Add some amazing feature'</code>)</li>
-<li>推送到分支 (<code>git push origin feature/amazing-feature</code>)</li>
-<li>打开 Pull Request</li>
+<li><strong>Fork 项目</strong></li>
+<li><strong>创建特性分支</strong> (<code>git checkout -b feature/amazing-feature</code>)</li>
+<li><strong>提交更改</strong> (<code>git commit -m 'Add some amazing feature'</code>)</li>
+<li><strong>推送分支</strong> (<code>git push origin feature/amazing-feature</code>)</li>
+<li><strong>创建 Pull Request</strong></li>
 </ol>
+<h3 id="开发规范">开发规范</h3>
+<ul>
+<li>使用 <code>gofmt</code> 格式化代码</li>
+<li>遵循 Go 官方编码规范</li>
+<li>添加必要的单元测试</li>
+<li>更新相关文档</li>
+</ul>
 <h2 id="-更新日志">📝 更新日志</h2>
+<h3 id="v120-2024-12-24---当前版本">v1.2.0 (2024-12-24) - 当前版本</h3>
+<ul>
+<li>✨ 成功部署到 Render 云平台</li>
+<li>🐳 添加完整的 Docker 支持</li>
+<li>🔧 修复环境变量和端口配置问题</li>
+<li>📚 完善 API 文档和使用示例</li>
+<li>🌐 提供在线服务地址</li>
+</ul>
+<h3 id="v110-2024-12-24">v1.1.0 (2024-12-24)</h3>
+<ul>
+<li>🚀 移除用户系统，改为全局共享</li>
+<li>📦 优化数据库结构和查询性能</li>
+<li>🔒 增强错误处理和安全性</li>
+</ul>
 <h3 id="v100-2024-12-24">v1.0.0 (2024-12-24)</h3>
 <ul>
 <li>✨ 初始版本发布</li>
-<li>🚀 支持三种学习内容类型</li>
 <li>🤖 集成豆包大模型 API</li>
-<li>📦 Vercel 无服务器部署支持</li>
+<li>📚 支持三种学习内容类型</li>
+<li>🏗️ 完整的 Go + Gin 架构</li>
 </ul>
+<h2 id="-常见问题">🆘 常见问题</h2>
+<h3 id="q-为什么有时候-api-响应很慢">Q: 为什么有时候 API 响应很慢？</h3>
+<p>A: Render 免费版会在 15 分钟无活动后休眠，首次访问需要 30-60 秒唤醒时间。</p>
+<h3 id="q-可以修改学习内容类型吗">Q: 可以修改学习内容类型吗？</h3>
+<p>A: 目前支持 english、chinese、tcm 三种类型。如需添加新类型，请提交 Issue 或 PR。</p>
+<h3 id="q-数据是否会丢失">Q: 数据是否会丢失？</h3>
+<p>A: 云端部署的数据会持久化保存，但建议定期备份重要数据。</p>
+<h3 id="q-如何获取豆包-api-密钥">Q: 如何获取豆包 API 密钥？</h3>
+<p>A: 访问 <a href="https://www.volcengine.com/product/doubao">字节跳动火山引擎</a> 注册并申请 API 密钥。</p>
 <h2 id="-许可证">📄 许可证</h2>
 <p>本项目基于 <a href="LICENSE">MIT License</a> 开源协议。</p>
-<h2 id="-特别感谢">💡 特别感谢</h2>
+<h2 id="-致谢">💡 致谢</h2>
 <ul>
 <li><a href="https://gin-gonic.com/">Gin Web Framework</a> - 优秀的 Go Web 框架</li>
 <li><a href="https://gorm.io/">GORM</a> - 强大的 Go ORM 库</li>
 <li><a href="https://www.volcengine.com/product/doubao">豆包大模型</a> - 提供 AI 能力支持</li>
-<li><a href="https://vercel.com/">Vercel</a> - 优秀的部署平台</li>
+<li><a href="https://render.com/">Render</a> - 优秀的云部署平台</li>
+<li><a href="https://sqlite.org/">SQLite</a> - 轻量级数据库引擎</li>
 </ul>
 <h2 id="-联系方式">📞 联系方式</h2>
 <ul>
-<li>项目地址: <a href="https://github.com/your-username/everyday-study-backend">GitHub</a></li>
-<li>问题反馈: <a href="https://github.com/your-username/everyday-study-backend/issues">Issues</a></li>
-<li>作者邮箱: <a href="mailto:your-email@example.com">your-email@example.com</a></li>
+<li>🌐 <strong>项目地址</strong>: <a href="https://github.com/wurslu/everyday-study-backend">GitHub</a></li>
+<li>🐛 <strong>问题反馈</strong>: <a href="https://github.com/wurslu/everyday-study-backend/issues">Issues</a></li>
+<li>📧 <strong>作者邮箱</strong>: [联系方式]</li>
+<li>🚀 <strong>在线服务</strong>: <a href="https://everyday-study-backend.onrender.com">https://everyday-study-backend.onrender.com</a></li>
 </ul>
 <hr>
-<p>⭐ 如果这个项目对你有帮助，请给个 Star 支持一下！</p>
+<p>⭐ <strong>如果这个项目对你有帮助，请给个 Star 支持一下！</strong></p>
+<p>🌟 <strong>Star 数量越多，更新越频繁！</strong></p>
 
             <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
             

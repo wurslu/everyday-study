@@ -32,13 +32,22 @@ func main() {
 	// 创建路由
 	router := gin.Default()
 
-	// 配置中间件
+	// 配置 CORS - 重要修复！
 	router.Use(cors.New(cors.Config{
-		AllowAllOrigins:  true,
+		AllowOrigins:     []string{"*"}, // 允许所有域名，生产环境建议指定具体域名
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
-		AllowCredentials: true,
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization", "Accept", "X-Requested-With"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: false, // 设为 false 以支持通配符域名
 	}))
+
+	// 添加预检请求处理
+	router.OPTIONS("/*path", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Origin, Content-Length, Content-Type, Authorization, Accept, X-Requested-With")
+		c.Status(200)
+	})
 
 	router.Use(middleware.ErrorHandler())
 
@@ -64,7 +73,7 @@ func main() {
 		})
 	})
 
-	// Render 端口配置 - 关键修复！
+	// Render 端口配置
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = cfg.Port
@@ -81,8 +90,10 @@ func main() {
 	fmt.Println("   GET  /api/stats - 获取全局统计")
 	fmt.Println("📚 支持的学习类型: english, chinese, tcm")
 	fmt.Println("💡 注意：现在所有用户在同一天看到相同内容！")
+	fmt.Println("🌐 CORS: 已配置支持跨域请求")
 
-	// 简化启动逻辑 - 移除优雅关闭的复杂性
+	// 直接启动
+	log.Printf("服务器启动在端口 %s", port)
 	if err := router.Run("0.0.0.0:" + port); err != nil {
 		log.Fatal("服务启动失败:", err)
 	}
