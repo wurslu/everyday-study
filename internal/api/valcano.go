@@ -129,7 +129,7 @@ func (vc *VolcanoClient) generatePrompt(learningType string, learned []string) s
 
 请严格按照以下JSON格式输出，不要添加任何markdown标记或其他文本：
 {
-  "poem": "一句精选诗词，包含作者和出处",
+  "poem": "一句完整的精选诗词，包含作者和出处，比如：床前明月光，疑是地上霜。—— 唐 李白 《静夜思》",
   "interpretation": "诗词释义",
   "key_words": [
     {"word": "词汇1", "meaning": "释义1"},
