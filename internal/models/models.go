@@ -32,9 +32,9 @@ const (
 )
 
 var LearningTypeNames = map[LearningType]string{
-	English: "英语",
-	Chinese: "国学",
-	TCM:     "中医",
+	English: "英语谚语",
+	Chinese: "中文古诗词",
+	TCM:     "中医基础",
 }
 
 func IsValidLearningType(t string) bool {

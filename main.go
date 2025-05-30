@@ -18,8 +18,8 @@ func main() {
 	// 加载配置
 	cfg := config.Load()
 
-	// 初始化数据库
-	db, err := database.Init()
+	// 初始化数据库 - 传递配置
+	db, err := database.Init(cfg)
 	if err != nil {
 		log.Fatal("数据库初始化失败:", err)
 	}
@@ -32,7 +32,7 @@ func main() {
 	// 创建路由
 	router := gin.Default()
 
-	// 配置 CORS - 重要修复！
+	// 配置 CORS
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"}, // 允许所有域名，生产环境建议指定具体域名
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
@@ -91,10 +91,19 @@ func main() {
 	fmt.Println("📚 支持的学习类型: english, chinese, tcm")
 	fmt.Println("💡 注意：现在所有用户在同一天看到相同内容！")
 	fmt.Println("🌐 CORS: 已配置支持跨域请求")
+	fmt.Printf("🔑 API密钥: %s\n", maskAPIKey(cfg.VolcanoAPIKey))
 
 	// 直接启动
 	log.Printf("服务器启动在端口 %s", port)
 	if err := router.Run("0.0.0.0:" + port); err != nil {
 		log.Fatal("服务启动失败:", err)
 	}
+}
+
+// 遮盖API密钥显示
+func maskAPIKey(key string) string {
+	if len(key) <= 8 {
+		return "已设置"
+	}
+	return key[:4] + "****" + key[len(key)-4:]
 }

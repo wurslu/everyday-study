@@ -1,6 +1,7 @@
 package database
 
 import (
+	"everyday-study-backend/internal/config"
 	"everyday-study-backend/internal/models"
 	"fmt"
 	"time"
@@ -12,10 +13,11 @@ import (
 
 var DB *gorm.DB
 
-func Init() (*gorm.DB, error) {
+func Init(cfg *config.Config) (*gorm.DB, error) {
 	var err error
 	
-	DB, err = gorm.Open(sqlite.Open("learning.db"), &gorm.Config{
+	// 使用配置文件中的数据库路径
+	DB, err = gorm.Open(sqlite.Open(cfg.DatabasePath), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
