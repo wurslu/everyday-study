@@ -55,12 +55,10 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 		return
 	}
 
-	// 添加请求日志
 	fmt.Printf("📥 收到请求 - 类型: %s, 时间: %s\n", 
 		models.GetLearningTypeName(learningType), 
 		time.Now().Format("2006-01-02 15:04:05"))
 
-	// 检查今日是否已有记录
 	todayRecord, err := database.GetTodayLearningRecord(learningType)
 	if err != nil {
 		log.Printf("获取今日学习记录失败: %v", err)
@@ -72,7 +70,6 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 		return
 	}
 
-	// 如果今日已有记录，直接返回
 	if todayRecord != nil {
 		fmt.Printf("🎯 返回今日已缓存的%s内容，记录ID: %d\n", 
 			models.GetLearningTypeName(learningType), todayRecord.ID)
@@ -92,10 +89,8 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 		return
 	}
 
-	// 生成新内容
 	fmt.Printf("🆕 今日尚无%s内容，开始生成新内容...\n", models.GetLearningTypeName(learningType))
 
-	// 获取已学习内容列表
 	learnedContent, err := database.GetLearnedContent(learningType)
 	if err != nil {
 		log.Printf("获取已学习内容失败: %v", err)
@@ -109,7 +104,6 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 
 	fmt.Printf("📚 已学习内容数量: %d\n", len(learnedContent))
 
-	// 调用AI API
 	aiResponse, err := h.volcanoClient.CallVolcanoAPI(learningType, learnedContent)
 	if err != nil {
 		log.Printf("调用AI API失败: %v", err)
@@ -134,7 +128,6 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 	content := aiResponse.Choices[0].Message.Content
 	log.Printf("🤖 AI原始响应: %s", content[:min(100, len(content))]+"...")
 
-	// 使用改进的解析方法
 	parsedContent, err := h.parseAIContent(content, learningType)
 	if err != nil {
 		log.Printf("解析AI内容失败: %v", err)
@@ -146,7 +139,6 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 		return
 	}
 
-	// 创建学习内容
 	learningContent := models.LearningContent{
 		Type:           models.LearningType(learningType),
 		Content:        parsedContent.Content,
@@ -157,7 +149,6 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 
 	log.Printf("📝 创建的学习内容: %+v", learningContent)
 
-	// 保存到数据库
 	savedRecord, err := database.SaveLearningRecord(learningType, learningContent)
 	if err != nil {
 		log.Printf("保存学习记录失败: %v", err)
@@ -186,25 +177,20 @@ func (h *Handler) GetTodayLearning(c *gin.Context) {
 	})
 }
 
-// 定义统一的解析结果结构
 type ParsedContent struct {
 	Content        string
 	Interpretation string
 	KeyWords       []string
 }
 
-// 改进的AI内容解析方法
 func (h *Handler) parseAIContent(contentStr string, learningType string) (*ParsedContent, error) {
-	// 清理可能的markdown代码块标记
 	contentStr = strings.TrimPrefix(contentStr, "```json")
 	contentStr = strings.TrimSuffix(contentStr, "```")
 	contentStr = strings.TrimSpace(contentStr)
 
-	// 先尝试原有的解析方式
 	var aiData models.AIContent
 	err := json.Unmarshal([]byte(contentStr), &aiData)
 	if err == nil {
-		// 验证并提取内容
 		result := h.extractContentFromAIData(&aiData, learningType)
 		if result != nil {
 			return result, nil
@@ -213,24 +199,20 @@ func (h *Handler) parseAIContent(contentStr string, learningType string) (*Parse
 
 	log.Printf("直接解析失败，尝试灵活解析: %v", err)
 
-	// 尝试灵活解析
 	return h.flexibleParseContent(contentStr, learningType)
 }
 
-// 从AIData中提取内容
 func (h *Handler) extractContentFromAIData(aiData *models.AIContent, learningType string) *ParsedContent {
 	result := &ParsedContent{
 		Interpretation: aiData.Interpretation,
 		KeyWords:       []string{},
 	}
 
-	// 根据类型提取主内容
 	switch strings.ToLower(learningType) {
 	case "english":
 		if aiData.Proverb != "" {
 			result.Content = aiData.Proverb
 		}
-		// 转换KeyWords
 		if len(aiData.KeyWords) > 0 {
 			for _, kw := range aiData.KeyWords {
 				result.KeyWords = append(result.KeyWords, fmt.Sprintf("%s: %s", kw.Word, kw.Meaning))
@@ -240,7 +222,6 @@ func (h *Handler) extractContentFromAIData(aiData *models.AIContent, learningTyp
 		if aiData.Poem != "" {
 			result.Content = aiData.Poem
 		}
-		// 转换KeyWords
 		if len(aiData.KeyWords) > 0 {
 			for _, kw := range aiData.KeyWords {
 				result.KeyWords = append(result.KeyWords, fmt.Sprintf("%s: %s", kw.Word, kw.Meaning))
@@ -250,7 +231,6 @@ func (h *Handler) extractContentFromAIData(aiData *models.AIContent, learningTyp
 		if aiData.TCMText != "" {
 			result.Content = aiData.TCMText
 		}
-		// 转换KeyConcepts
 		if len(aiData.KeyConcepts) > 0 {
 			for _, kc := range aiData.KeyConcepts {
 				result.KeyWords = append(result.KeyWords, fmt.Sprintf("%s: %s", kc.Concept, kc.Meaning))
@@ -258,7 +238,6 @@ func (h *Handler) extractContentFromAIData(aiData *models.AIContent, learningTyp
 		}
 	}
 
-	// 验证必要字段
 	if result.Content == "" || result.Interpretation == "" {
 		return nil
 	}
@@ -266,9 +245,7 @@ func (h *Handler) extractContentFromAIData(aiData *models.AIContent, learningTyp
 	return result
 }
 
-// 灵活解析内容
 func (h *Handler) flexibleParseContent(contentStr string, learningType string) (*ParsedContent, error) {
-	// 使用map来灵活解析
 	var rawContent map[string]interface{}
 	err := json.Unmarshal([]byte(contentStr), &rawContent)
 	if err != nil {
@@ -307,7 +284,6 @@ func (h *Handler) flexibleParseContent(contentStr string, learningType string) (
 	return result, nil
 }
 
-// 安全获取字符串值
 func (h *Handler) getStringValue(data map[string]interface{}, key string) string {
 	if value, exists := data[key]; exists {
 		if str, ok := value.(string); ok {
@@ -317,7 +293,6 @@ func (h *Handler) getStringValue(data map[string]interface{}, key string) string
 	return ""
 }
 
-// 解析关键项目
 func (h *Handler) parseKeyItems(data map[string]interface{}, arrayKey, itemKey, meaningKey string) []string {
 	var result []string
 
@@ -331,7 +306,6 @@ func (h *Handler) parseKeyItems(data map[string]interface{}, arrayKey, itemKey, 
 						result = append(result, fmt.Sprintf("%s: %s", itemValue, meaningValue))
 					}
 				} else if str, ok := item.(string); ok {
-					// 如果直接是字符串
 					result = append(result, str)
 				}
 			}
@@ -452,10 +426,337 @@ func (h *Handler) GetGlobalStats(c *gin.Context) {
 	})
 }
 
-// 辅助函数
 func min(a, b int) int {
 	if a < b {
 		return a
 	}
 	return b
+}
+
+func (h *Handler) DebugShowAllRecords(c *gin.Context) {
+	limitStr := c.DefaultQuery("limit", "20")
+	limit, _ := strconv.Atoi(limitStr)
+	if limit <= 0 || limit > 100 {
+		limit = 20
+	}
+
+	var records []models.LearningRecord
+	err := h.db.Order("date DESC").Limit(limit).Find(&records).Error
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.APIResponse{
+			Success:   false,
+			Message:   "获取记录失败",
+			ErrorCode: "SERVER_ERROR",
+		})
+		return
+	}
+
+	debugRecords := make([]gin.H, len(records))
+	for i, record := range records {
+		debugRecords[i] = gin.H{
+			"id":             record.ID,
+			"type":           record.Type,
+			"type_name":      models.GetLearningTypeName(record.Type),
+			"content":        record.Content,
+			"interpretation": record.Interpretation,
+			"key_words":      record.FormatKeyWords(),
+			"date":           record.Date.Format("2006-01-02 15:04:05"),
+			"created_at":     record.CreatedAt.Format("2006-01-02 15:04:05"),
+		}
+	}
+
+	c.JSON(http.StatusOK, models.APIResponse{
+		Success: true,
+		Message: "获取所有记录成功",
+		Data: gin.H{
+			"total":   len(debugRecords),
+			"records": debugRecords,
+		},
+	})
+}
+
+func (h *Handler) DebugClearTodayRecords(c *gin.Context) {
+	learningType := c.Param("type")
+
+	if !models.IsValidLearningType(learningType) {
+		c.JSON(http.StatusBadRequest, models.APIResponse{
+			Success:   false,
+			Message:   "无效的学习类型",
+			ErrorCode: "VALIDATION_ERROR",
+		})
+		return
+	}
+
+	database.DebugClearTodayRecords(learningType)
+
+	c.JSON(http.StatusOK, models.APIResponse{
+		Success: true,
+		Message: "清理今日记录成功",
+		Data: gin.H{
+			"type":      learningType,
+			"type_name": models.GetLearningTypeName(learningType),
+			"action":    "清理今日记录",
+		},
+	})
+}
+
+func (h *Handler) DebugForceGenerateContent(c *gin.Context) {
+	learningType := c.Param("type")
+
+	if !models.IsValidLearningType(learningType) {
+		c.JSON(http.StatusBadRequest, models.APIResponse{
+			Success:   false,
+			Message:   "无效的学习类型",
+			ErrorCode: "VALIDATION_ERROR",
+		})
+		return
+	}
+
+	database.DebugClearTodayRecords(learningType)
+
+	h.GetTodayLearning(c)
+}
+
+func (h *Handler) DebugShowLearnedContent(c *gin.Context) {
+	learningType := c.Query("type")
+
+	if learningType != "" && !models.IsValidLearningType(learningType) {
+		c.JSON(http.StatusBadRequest, models.APIResponse{
+			Success:   false,
+			Message:   "无效的学习类型",
+			ErrorCode: "VALIDATION_ERROR",
+		})
+		return
+	}
+
+	result := make(map[string]interface{})
+
+	if learningType != "" {
+		contents, err := database.GetLearnedContent(learningType)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, models.APIResponse{
+				Success:   false,
+				Message:   "获取已学习内容失败",
+				ErrorCode: "SERVER_ERROR",
+			})
+			return
+		}
+
+		result[learningType] = gin.H{
+			"type_name": models.GetLearningTypeName(learningType),
+			"count":     len(contents),
+			"contents":  contents,
+		}
+	} else {
+		allTypes := models.GetAllLearningTypes()
+		for _, t := range allTypes {
+			contents, err := database.GetLearnedContent(t)
+			if err != nil {
+				result[t] = gin.H{
+					"type_name": models.GetLearningTypeName(t),
+					"count":     0,
+					"error":     err.Error(),
+				}
+			} else {
+				result[t] = gin.H{
+					"type_name": models.GetLearningTypeName(t),
+					"count":     len(contents),
+					"contents":  contents,
+				}
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, models.APIResponse{
+		Success: true,
+		Message: "获取已学习内容成功",
+		Data:    result,
+	})
+}
+
+func (h *Handler) DebugDatabaseInfo(c *gin.Context) {
+	var learningRecordCount int64
+	var learnedContentCount int64
+
+	h.db.Model(&models.LearningRecord{}).Count(&learningRecordCount)
+	h.db.Model(&models.LearnedContent{}).Count(&learnedContentCount)
+
+	typeStats := make(map[string]gin.H)
+	for _, t := range models.GetAllLearningTypes() {
+		var recordCount int64
+		var contentCount int64
+
+		h.db.Model(&models.LearningRecord{}).Where("type = ?", t).Count(&recordCount)
+		h.db.Model(&models.LearnedContent{}).Where("type = ?", t).Count(&contentCount)
+
+		typeStats[t] = gin.H{
+			"type_name":      models.GetLearningTypeName(t),
+			"record_count":   recordCount,
+			"content_count":  contentCount,
+		}
+	}
+
+	c.JSON(http.StatusOK, models.APIResponse{
+		Success: true,
+		Message: "获取数据库信息成功",
+		Data: gin.H{
+			"total_learning_records": learningRecordCount,
+			"total_learned_contents": learnedContentCount,
+			"type_statistics":        typeStats,
+		},
+	})
+}
+
+func (h *Handler) DebugTestAIAPI(c *gin.Context) {
+	learningType := c.DefaultQuery("type", "english")
+
+	if !models.IsValidLearningType(learningType) {
+		c.JSON(http.StatusBadRequest, models.APIResponse{
+			Success:   false,
+			Message:   "无效的学习类型",
+			ErrorCode: "VALIDATION_ERROR",
+		})
+		return
+	}
+
+	learnedContent, err := database.GetLearnedContent(learningType)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.APIResponse{
+			Success:   false,
+			Message:   "获取已学习内容失败",
+			ErrorCode: "SERVER_ERROR",
+		})
+		return
+	}
+
+	testLearned := learnedContent
+	if len(testLearned) > 5 {
+		testLearned = testLearned[:5]
+	}
+
+	aiResponse, err := h.volcanoClient.CallVolcanoAPI(learningType, testLearned)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.APIResponse{
+			Success:   false,
+			Message:   "AI API调用失败",
+			ErrorCode: "AI_API_ERROR",
+			Errors:    []string{err.Error()},
+		})
+		return
+	}
+
+	if len(aiResponse.Choices) == 0 {
+		c.JSON(http.StatusInternalServerError, models.APIResponse{
+			Success:   false,
+			Message:   "AI API返回空响应",
+			ErrorCode: "AI_API_ERROR",
+		})
+		return
+	}
+
+	content := aiResponse.Choices[0].Message.Content
+
+	c.JSON(http.StatusOK, models.APIResponse{
+		Success: true,
+		Message: "AI API测试成功",
+		Data: gin.H{
+			"type":              learningType,
+			"type_name":         models.GetLearningTypeName(learningType),
+			"learned_count":     len(testLearned),
+			"test_learned":      testLearned,
+			"ai_raw_response":   content,
+			"response_length":   len(content),
+		},
+	})
+}
+
+func (h *Handler) DebugTriggerUpdate(c *gin.Context) {
+	learningType := c.Query("type")
+
+	if learningType != "" && !models.IsValidLearningType(learningType) {
+		c.JSON(http.StatusBadRequest, models.APIResponse{
+			Success:   false,
+			Message:   "无效的学习类型",
+			ErrorCode: "VALIDATION_ERROR",
+		})
+		return
+	}
+
+	if learningType != "" {
+		database.DebugClearTodayRecords(learningType)
+		c.JSON(http.StatusOK, models.APIResponse{
+			Success: true,
+			Message: "已清理指定类型的今日记录，请重新访问对应的学习接口",
+			Data: gin.H{
+				"type":      learningType,
+				"type_name": models.GetLearningTypeName(learningType),
+				"action":    "清理今日记录",
+				"next_step": "访问 /api/today-learning/" + learningType,
+			},
+		})
+	} else {
+		for _, t := range models.GetAllLearningTypes() {
+			database.DebugClearTodayRecords(t)
+		}
+		c.JSON(http.StatusOK, models.APIResponse{
+			Success: true,
+			Message: "已清理所有类型的今日记录",
+			Data: gin.H{
+				"action":    "清理所有今日记录",
+				"types":     models.GetAllLearningTypes(),
+				"next_step": "重新访问各类型的学习接口将生成新内容",
+			},
+		})
+	}
+}
+
+func (h *Handler) DebugSystemStatus(c *gin.Context) {
+	sqlDB, err := h.db.DB()
+	var dbStatus string
+	if err != nil {
+		dbStatus = "获取连接失败: " + err.Error()
+	} else {
+		err = sqlDB.Ping()
+		if err != nil {
+			dbStatus = "连接测试失败: " + err.Error()
+		} else {
+			dbStatus = "连接正常"
+		}
+	}
+
+	todayStatus := make(map[string]gin.H)
+	for _, t := range models.GetAllLearningTypes() {
+		record, err := database.GetTodayLearningRecord(t)
+		if err != nil {
+			todayStatus[t] = gin.H{
+				"type_name": models.GetLearningTypeName(t),
+				"status":    "检查失败",
+				"error":     err.Error(),
+			}
+		} else if record == nil {
+			todayStatus[t] = gin.H{
+				"type_name": models.GetLearningTypeName(t),
+				"status":    "今日无记录",
+				"record":    nil,
+			}
+		} else {
+			todayStatus[t] = gin.H{
+				"type_name": models.GetLearningTypeName(t),
+				"status":    "今日已有记录",
+				"record_id": record.ID,
+				"date":      record.Date.Format("2006-01-02 15:04:05"),
+				"content":   record.Content[:min(50, len(record.Content))] + "...",
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, models.APIResponse{
+		Success: true,
+		Message: "系统状态检查完成",
+		Data: gin.H{
+			"database_status":    dbStatus,
+			"today_content_status": todayStatus,
+			"supported_types":    models.GetAllLearningTypes(),
+		},
+	})
 }

@@ -80,7 +80,32 @@ func main() {
 		api.GET("/learning-history", handler.GetLearningHistory)
 		api.GET("/learning-history/:type", handler.GetLearningHistoryByType)
 		api.GET("/stats", handler.GetGlobalStats)
+	}
+
+	if cfg.Environment == "development" {
+		debug := router.Group("/debug")
+		{
+			debug.GET("/records", handler.DebugShowAllRecords)
+			debug.GET("/learned-content", handler.DebugShowLearnedContent)
+			debug.GET("/database-info", handler.DebugDatabaseInfo)
+			debug.GET("/system-status", handler.DebugSystemStatus)
+			
+			debug.POST("/clear-today/:type", handler.DebugClearTodayRecords)
+			debug.POST("/force-generate/:type", handler.DebugForceGenerateContent)
+			debug.POST("/trigger-update", handler.DebugTriggerUpdate)
+			
+			debug.GET("/test-ai", handler.DebugTestAIAPI)
+		}
 		
+		log.Println("🔧 开发环境调试接口已启用:")
+		log.Println("   GET  /debug/records - 查看所有学习记录")
+		log.Println("   GET  /debug/learned-content - 查看已学习内容")
+		log.Println("   GET  /debug/database-info - 查看数据库信息")
+		log.Println("   GET  /debug/system-status - 查看系统状态")
+		log.Println("   POST /debug/clear-today/:type - 清理今日指定类型记录")
+		log.Println("   POST /debug/force-generate/:type - 强制生成新内容")
+		log.Println("   POST /debug/trigger-update - 手动触发更新")
+		log.Println("   GET  /debug/test-ai - 测试AI API连接")
 	}
 
 	router.NoRoute(func(c *gin.Context) {
